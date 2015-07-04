@@ -1,9 +1,47 @@
 var HashTable = function(){
   this._limit = 8;
+  this._count = 0;
   this._storage = LimitedArray(this._limit);
 };
 
+HashTable.prototype.doubleSize = function() {
+  this._limit *= 2;
+  var oldStorage = this._storage;
+  this._storage = LimitedArray(this._limit);
+    // for each list in storage array
+      // for each element in list
+        // insert item
+  this.hashEach(oldStorage, function(item, value) {
+    this._count = 0;
+    this.insert(item, value);
+  });
+}
+
+HashTable.prototype.hashEach = function(storageArray, callback) {
+  // for each list in storage array
+  _.each(storageArray, function(item) {
+    // for each element in list
+    if (item !== undefined)
+    {
+      var processNode = function(node)
+      {
+        callback(node.key, node.stored);
+        if(node.next !== null)
+        {
+          processNode(node.next);
+        }
+      }
+      processNode(item.head);
+      // do callback
+    }
+  });
+};
+
 HashTable.prototype.insert = function(k, v){
+  this._count++;
+  if(this._count / this._limit > .75) {
+    this.doubleSize();
+  }
   var i = getIndexBelowMaxForKey(k, this._limit);
   if(!Boolean(this._storage[i])){
   	this._storage[i] = HashLinkedList(); 
@@ -18,6 +56,7 @@ HashTable.prototype.retrieve = function(k){
 };
 
 HashTable.prototype.remove = function(k){
+  this._count--;
   var i = getIndexBelowMaxForKey(k, this._limit);
   this._storage[i].remove(k);
 
@@ -92,8 +131,12 @@ var HashLinkedList = function(){
 
   list.find = function(k)
   {
+    if(list.head === null) {
+      return null; 
+    }
   	var findCheckNode = function(node)
   	{
+
       if (node.value.key === k)
       {
       	return node.value.stored;
@@ -104,7 +147,9 @@ var HashLinkedList = function(){
       }
       return findCheckNode(node.next);
   	}
-
+    if (list.head === null) {
+      debugger;
+    }
   	return findCheckNode(list.head);
   }
 
