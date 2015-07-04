@@ -167,9 +167,9 @@ var HashListNode = function(value){
 
 /*
  * Complexity: What is the time complexity of the above functions?
- */
-
-
-/*
- * Complexity: What is the time complexity of the above functions?
+ insert: O(1)
+ retrieve: O(1)
+ remove: O(1)
+ double: O(n)
+ halve: O(n)
  */
