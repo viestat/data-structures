@@ -11,9 +11,10 @@ HashTable.prototype.doubleSize = function() {
     // for each list in storage array
       // for each element in list
         // insert item
+  var context = this;
   this.hashEach(oldStorage, function(item, value) {
-    this._count = 0;
-    this.insert(item, value);
+    context._count = 0;
+    context.insert(item, value);
   });
 }
 
